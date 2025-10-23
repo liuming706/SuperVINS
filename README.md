@@ -106,7 +106,7 @@ mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src/
 catkin_init_workspace
 cd ~/catkin_ws
-catkin_make
+catkin_make 
 echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bash
 source ~/.bashrc
 ```
@@ -147,14 +147,23 @@ find_package(Ceres REQUIRED PATHS "you Ceres path")
 
 ```bash
 cd ~/catkin_ws
-catkin_make
+source /opt/ros/noetic/setup.bash
+# export LD_LIBRARY_PATH=~/workspace/3rdparty/release/onnxruntime-linux-x64-gpu-1.16.3/lib/:$LD_LIBRARY_PATH
+catkin_make \
+ -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+ -DCMAKE_EXPORT_COMPILE_COMMANDS=Yes \
+ -DONNXRUNTIME_ROOTDIR=~/workspace/3rdparty/release/onnxruntime-linux-x64-gpu-1.16.3 \
+ -DCERES_DIR=~/workspace/3rdparty/release/ceres-solver-2.1.0/install
+
 ```
 
 ### 4.5 Run the project
 
 ```bash
 roslaunch supervins supervins_rviz.launch
-rosrun supervins supervins_node ~/catkin_ws/src/SuperVINS/config/euroc/euroc_mono_imu_config.yaml
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
+export PATH=$PATH:/usr/local/cuda/bin
+rosrun supervins supervins_node ~/workspace/noetic_ws/src/SuperVINS/config/webots/webots_stereo_imu_config.yaml
 (SuperVINS1.0 currently does not support loop detection)rosrun supervins_loop_fusion supervins_loop_fusion_node ~/catkin_ws/src/SuperVINS/config/euroc/euroc_mono_imu_config.yaml
 rosbag play ~/catkin_ws/src/SuperVINS/data/V2_01_easy.bag
 ```

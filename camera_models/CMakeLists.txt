@@ -18,7 +18,14 @@ find_package(OpenCV REQUIRED)
 
 # set(EIGEN_INCLUDE_DIR "/usr/local/include/eigen3")
 # find_package(Ceres REQUIRED)
-find_package(Ceres REQUIRED PATHS "/home/lhk/Thirdparty/Ceres")
+
+if(NOT CERES_DIR)
+    message(WARNING "CERES_DIR not set, using default")
+    find_package(Ceres REQUIRED)
+else()
+    find_package(Ceres REQUIRED PATHS ${CERES_DIR})
+endif()
+
 include_directories(${CERES_INCLUDE_DIRS})
 
 
